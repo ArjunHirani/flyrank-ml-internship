@@ -1,0 +1,13 @@
+{
+  "month_feature_window": "2026-03",
+  "month_label_window": "2026-04",
+  "n_rows": 101441,
+  "base_rate": 0.4022,
+  "precision_at_20": 0.0,
+  "precision_at_50": 0.0,
+  "reason_code": "STALE_AND_CTR_UNDERPERFORMING",
+  "action_thresholds": {
+    "PRIORITIZE_REFRESH": "rank<=50",
+    "MONITOR_CLOSELY": "rank<=200"
+  }
+}
