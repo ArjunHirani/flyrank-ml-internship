@@ -1,0 +1,19 @@
+{
+  "month_feature_window": "2026-03",
+  "month_label_window": "2026-04",
+  "n_scored": 101441,
+  "action_tier_counts": {
+    "MONITOR": 50712,
+    "NO_ACTION_THIS_CYCLE": 41668,
+    "PROTECT": 9011,
+    "PRIORITIZE_REFRESH": 50
+  },
+  "monitoring_baseline": {
+    "base_rate_april_2026": 0.4022,
+    "median_avg_position_march": 8.7,
+    "median_ctr_march": 0.0012,
+    "median_impressions_march": 786.0,
+    "validation_test_clients": 11,
+    "recommended_revalidation_cadence": "quarterly, minimum"
+  }
+}
