@@ -1,479 +1,292 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Predicting Content Decline from Prior-Window Search Signals — A FlyRank Internship Research Paper</title>
-  <style>
-    :root {
-      --ink: #1a1a2e;
-      --sub: #4a4a68;
-      --line: #e2e2ec;
-      --accent: #4C72B0;
-      --bg: #fafafc;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-      color: var(--ink);
-      background: var(--bg);
-      margin: 0;
-      line-height: 1.65;
-    }
-
-    .wrap {
-      max-width: 780px;
-      margin: 0 auto;
-      padding: 48px 24px 96px;
-    }
-
-    header.hero {
-      border-bottom: 1px solid var(--line);
-      padding-bottom: 32px;
-      margin-bottom: 40px;
-    }
-
-    h1 {
-      font-size: 1.9rem;
-      line-height: 1.25;
-      margin: 0 0 12px;
-    }
-
-    .meta {
-      color: var(--sub);
-      font-size: 0.95rem;
-    }
-
-    h2 {
-      font-size: 1.3rem;
-      margin-top: 56px;
-      padding-top: 8px;
-      border-top: 3px solid var(--accent);
-    }
-
-    h3 {
-      font-size: 1.05rem;
-      color: var(--sub);
-    }
-
-    p {
-      font-size: 1.02rem;
-    }
-
-    .abstract {
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 20px 24px;
-      font-size: 1rem;
-      margin-top: 20px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 16px 0;
-      font-size: 0.95rem;
-      background: #fff;
-    }
-
-    th,
-    td {
-      border: 1px solid var(--line);
-      padding: 8px 12px;
-      text-align: left;
-    }
-
-    th {
-      background: #f0f0f6;
-    }
-
-    code {
-      background: #eef0f7;
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-size: 0.9em;
-    }
-
-    .callout {
-      background: #fff7e6;
-      border-left: 4px solid #e0a800;
-      padding: 12px 16px;
-      margin: 20px 0;
-      border-radius: 4px;
-      font-size: 0.95rem;
-    }
-
-    .callout.bad {
-      background: #fdecea;
-      border-left-color: #d9534f;
-    }
-
-    figure {
-      margin: 24px 0;
-      text-align: center;
-    }
-
-    figure img {
-      max-width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-    }
-
-    figcaption {
-      color: var(--sub);
-      font-size: 0.9rem;
-      margin-top: 8px;
-    }
-
-    ul,
-    ol {
-      padding-left: 22px;
-    }
-
-    li {
-      margin-bottom: 8px;
-    }
-
-    a {
-      color: var(--accent);
-    }
-
-    footer {
-      margin-top: 64px;
-      padding-top: 24px;
-      border-top: 1px solid var(--line);
-      color: var(--sub);
-      font-size: 0.9rem;
-    }
-
-    .tier {
-      display: inline-block;
-      padding: 2px 10px;
-      border-radius: 12px;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-    .tier.refresh {
-      background: #fdecea;
-      color: #b02a25;
-    }
-
-    .tier.protect {
-      background: #e6f4ea;
-      color: #1e7a34;
-    }
-
-    .tier.monitor {
-      background: #fff7e6;
-      color: #8a6100;
-    }
-
-    .tier.none {
-      background: #eee;
-      color: #666;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predicting Content Decline from Prior-Window Search Signals — A FlyRank Internship Research Paper</title>
+<style>
+  :root {
+    --ink: #1a1a2e; --sub: #4a4a68; --line: #e2e2ec; --accent: #4C72B0; --bg: #fafafc;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: var(--ink); background: var(--bg); margin: 0; line-height: 1.65;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 48px 24px 96px; }
+  header.hero { border-bottom: 1px solid var(--line); padding-bottom: 32px; margin-bottom: 40px; }
+  h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 12px; }
+  .meta { color: var(--sub); font-size: 0.95rem; }
+  h2 {
+    font-size: 1.3rem; margin-top: 56px; padding-top: 8px; border-top: 3px solid var(--accent);
+  }
+  h3 { font-size: 1.05rem; color: var(--sub); }
+  p { font-size: 1.02rem; }
+  .abstract {
+    background: #fff; border: 1px solid var(--line); border-radius: 10px;
+    padding: 20px 24px; font-size: 1rem; margin-top: 20px;
+  }
+  table {
+    width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.95rem; background: #fff;
+  }
+  th, td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; }
+  th { background: #f0f0f6; }
+  code {
+    background: #eef0f7; padding: 1px 6px; border-radius: 4px; font-size: 0.9em;
+  }
+  .callout {
+    background: #fff7e6; border-left: 4px solid #e0a800; padding: 12px 16px; margin: 20px 0;
+    border-radius: 4px; font-size: 0.95rem;
+  }
+  .callout.bad {
+    background: #fdecea; border-left-color: #d9534f;
+  }
+  figure { margin: 24px 0; text-align: center; }
+  figure img { max-width: 100%; border: 1px solid var(--line); border-radius: 8px; }
+  figcaption { color: var(--sub); font-size: 0.9rem; margin-top: 8px; }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 8px; }
+  a { color: var(--accent); }
+  footer {
+    margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line);
+    color: var(--sub); font-size: 0.9rem;
+  }
+  .tier { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; }
+  .tier.refresh { background: #fdecea; color: #b02a25; }
+  .tier.protect { background: #e6f4ea; color: #1e7a34; }
+  .tier.monitor { background: #fff7e6; color: #8a6100; }
+  .tier.none { background: #eee; color: #666; }
+</style>
 </head>
-
 <body>
-  <div class="wrap">
+<div class="wrap">
 
-    <header class="hero">
-      <div class="meta">FlyRank ML Internship — Capstone Research Paper — 2026</div>
-      <h1>Predicting Content Decline from Prior-Window Search Signals: An Honest, Leakage-Audited Baseline-to-Model
-        Comparison</h1>
-      <div class="meta">By Arjun Hirani &middot; <a
-          href="https://github.com/ArjunHirani/flyrank-ml-internship">Repository</a></div>
-    </header>
+<header class="hero">
+  <div class="meta">FlyRank ML Internship — Capstone Research Paper — 2026</div>
+  <h1>Predicting Content Decline from Prior-Window Search Signals: An Honest, Leakage-Audited Baseline-to-Model Comparison</h1>
+  <div class="meta">By Arjun Hirani &middot; <a href="https://github.com/ArjunHirani/flyrank-ml-internship">Repository</a></div>
+</header>
 
-    <section id="abstract">
-      <h2>Abstract</h2>
-      <div class="abstract">
-        <p>
-          This paper asks: given a content page's search performance in one 30-day window, can we
-          predict whether its clicks will decline in the following 30-day window — and can that
-          prediction beat a transparent, hand-written rule? Using FlyRank's pseudonymized search
-          warehouse (March&rarr;April 2026, 101,441 content-item observations across 44 clients), we
-          built a genuine past&rarr;future label, deliberately caught and fixed a label-leakage bug in
-          our own pipeline (a score inflated from an honest 0.68 ROC&#8209;AUC to a meaningless 1.00),
-          and validated a Random Forest against the hand-written baseline on an identical
-          client&#8209;grouped held&#8209;out test split. The Random Forest reached Precision@50 of
-          0.96 versus the baseline's 0.00 on this split — a real, leakage&#8209;audited result, not an
-          inflated one. The output is a reason&#8209;coded, human&#8209;reviewed action playbook, not
-          an automated system: decision&#8209;support for a content reviewer with limited weekly
-          capacity, never a causal or algorithm-level claim.
-        </p>
-      </div>
-    </section>
-
-    <section id="introduction">
-      <h2>1. Introduction — The Decision This Supports</h2>
-      <p>
-        A content reviewer at a typical FlyRank client has limited weekly capacity — realistically
-        20&ndash;50 pages, not the whole site. In the starter dataset alone, 16,262 of 30,000 pages were
-        already flagged as declining under a simple current-window label — at 50 pages a week, clearing
-        that backlog for just one snapshot would take roughly 325 weeks, or 6.3 years. Detection alone
-        is not the bottleneck; <em>prioritization</em> is.
-      </p>
-      <p>
-        This paper asks a harder, more useful question than "which pages are declining right now?" —
-        it asks "which pages will decline <em>next</em>, before that shows up in a standard report?"
-        That reframing from a same-window snapshot to a genuine past&rarr;future prediction is the
-        central methodological commitment of this work, and it shapes every design choice that follows.
-      </p>
-    </section>
-
-    <section id="data">
-      <h2>2. Data</h2>
-      <p>
-        <strong>Release:</strong> FlyRank's pseudonymized internship warehouse
-        (<code>fact_content_daily_performance</code>, ~79M rows total; <code>dim_content</code>),
-        hosted as Parquet on Hugging Face and queried in place with DuckDB.
-      </p>
-      <p>
-        <strong>Time windows:</strong> March 2026 as the feature/decision window, April 2026 as the
-        outcome/label window — a genuine past&rarr;future split. The sealed final month (June 2026,
-        the <code>_sample</code> table) was never used for label logic, per the dataset's own guidance.
-      </p>
-      <table>
-        <tr>
-          <th>Metric</th>
-          <th>Value</th>
-        </tr>
-        <tr>
-          <td>Rows in March 2026 (raw daily fact table)</td>
-          <td>9,841,378</td>
-        </tr>
-        <tr>
-          <td>Distinct clients (March)</td>
-          <td>55</td>
-        </tr>
-        <tr>
-          <td>Distinct content items (March)</td>
-          <td>331,437</td>
-        </tr>
-        <tr>
-          <td>GSC data availability (<code>IS TRUE</code>, not assumed)</td>
-          <td>36.7%</td>
-        </tr>
-        <tr>
-          <td>GA4 data availability (<code>IS TRUE</code>, not assumed)</td>
-          <td>4.2%</td>
-        </tr>
-        <tr>
-          <td>Final analysis population (active March pages + April outcome)</td>
-          <td>101,441 rows, 44 clients</td>
-        </tr>
-      </table>
-      <p><strong>Excluded, and why:</strong></p>
-      <ul>
-        <li><strong>GA4 engagement fields</strong> — excluded entirely. At only 4.2% row-level
-          availability in March, any engagement feature would be built on a small, non-representative
-          slice of clients, not the general population.</li>
-        <li><strong><code>fact_content_query_90d</code></strong> (query-level detail) — excluded for
-          this pass; its fixed 90-day window does not cleanly align with a monthly March/April split
-          without additional care to avoid a new window-overlap mistake.</li>
-        <li><strong>Individual AI-referral provider columns</strong> — too sparse at the single
-          content-item, single-month grain to be reliable features.</li>
-      </ul>
-    </section>
-
-    <section id="methodology">
-      <h2>3. Methodology</h2>
-      <h3>Label definition</h3>
-      <p>
-        <code>is_declining_april = 1 if clicks_april &lt; clicks_march else 0</code> — an
-        <strong>observed outcome</strong>, built entirely from April data. This deliberately avoids the
-        same-window proxy label trap identified early in this project (<code>trend_direction</code>,
-        itself derived from <code>trend_pct</code>, would teach a model to reproduce a rule rather than
-        learn the world).
-      </p>
-      <h3>Features (7, all knowable by end of March)</h3>
-      <p>
-        <code>impressions_march</code>, <code>clicks_march</code>, <code>avg_position_march</code>,
-        <code>active_days_march</code>, <code>content_age_days_march</code>, <code>ctr_march</code>,
-        and <code>ctr_gap</code> (actual CTR minus the position-tier's empirical expected CTR).
-      </p>
-      <h3>Baseline</h3>
-      <p>
-        A transparent hand-written rule: <code>score = 0.5&times;staleness_percentile +
-  0.5&times;CTR&#8209;deficit_percentile</code>. No fitted weights, one reason code, readable in
-        one sentence. This is the number every subsequent model must beat.
-      </p>
-      <h3>Validation design</h3>
-      <p>
-        <strong><code>GroupShuffleSplit</code> on <code>client_hash_id</code></strong>, 75/25. Every
-        content item from a given client is entirely in train or entirely in test, never both. This
-        replaces an earlier naive random row-level split, which risked letting a client's other content
-        items leak across train and test — the model could partially learn "this client's general
-        level" rather than genuine per-page signal.
-      </p>
-      <div class="callout bad">
-        <strong>Leakage check, performed deliberately:</strong> we added <code>clicks_april</code> — the
-        exact column the label is derived from — as a "feature," and watched ROC&#8209;AUC jump from an
-        honest <strong>0.682</strong> to a meaningless <strong>1.000</strong>. We then removed it and
-        kept the honest number. This confirms our evaluation harness actually detects leakage rather
-        than silently accepting it — a test we would want run against any claim before trusting it,
-        including claims in this paper.
-      </div>
-    </section>
-
-    <section id="results">
-      <h2>4. Results (vs Baseline)</h2>
-      <p>
-        All three methods evaluated on the identical held-out, client-grouped test split (11 clients,
-        never seen during training):
-      </p>
-      <table>
-        <tr>
-          <th>Method</th>
-          <th>Precision@20</th>
-          <th>Precision@50</th>
-          <th>ROC-AUC</th>
-          <th>Base rate</th>
-        </tr>
-        <tr>
-          <td>Baseline rule (hand-written)</td>
-          <td>0.00</td>
-          <td>0.00</td>
-          <td>0.285</td>
-          <td>0.376</td>
-        </tr>
-        <tr>
-          <td>Logistic Regression</td>
-          <td>0.60</td>
-          <td>0.66</td>
-          <td>0.715</td>
-          <td>0.376</td>
-        </tr>
-        <tr>
-          <td><strong>Random Forest</strong></td>
-          <td><strong>0.95</strong></td>
-          <td><strong>0.96</strong></td>
-          <td><strong>0.856</strong></td>
-          <td>0.376</td>
-        </tr>
-      </table>
-      <figure>
-        <img src="images/model_vs_baseline_precision.png"
-          alt="Bar chart comparing Precision@20 and Precision@50 for the baseline rule, Logistic Regression, and Random Forest">
-        <figcaption>Precision@20 and Precision@50 for all three methods, same held-out client-grouped test split.
-        </figcaption>
-      </figure>
-      <p>
-        A genuinely surprising result worth stating plainly rather than hiding: the hand-written
-        baseline scored <em>below random</em> on this particular 11-client test slice (ROC-AUC 0.285).
-        We treat this as a real finding about this specific split, not proof the underlying signals
-        (staleness, CTR-vs-position) are worthless — a claim that would need multiple splits to confirm
-        before it could be trusted.
-      </p>
-      <p>
-        Random Forest's top permutation-importance features were <code>ctr_march</code> (0.062) and
-        <code>clicks_march</code> (0.059) — both plausible and fully March-observed. Reviewing wrong
-        cases by hand: the model's most confident false negative was a page with 1,279 impressions, 31
-        clicks, and a strong position (3.8) that declined anyway — nothing in these 7 features warned
-        of it, pointing to real variance outside this feature set (seasonality, a competitor change)
-        that a March-only snapshot cannot see.
-      </p>
-    </section>
-
-    <section id="limitations">
-      <h2>5. Limitations &amp; Honest Framing</h2>
-      <ul>
-        <li><strong>Single month-pair.</strong> Validated on one past&rarr;future window
-          (March&rarr;April 2026). Other-month or seasonal generalization is untested.</li>
-        <li><strong>Small test-client count.</strong> 11 held-out clients is enough to catch gross
-          overfitting, not enough for confident broad cross-client generalization claims.</li>
-        <li><strong>GA4 excluded.</strong> Results reflect GSC-observable behavior only.</li>
-        <li><strong>Label-construct sensitivity.</strong> A strict "&lt;" threshold on raw click
-          counts can flip the label on a single extra April click for very low-volume March pages —
-          some precision may reflect this rather than pure decline signal.</li>
-        <li><strong>No causal claims.</strong> Every result here is observed, directional, and
-          decision-support — never a claim about how any search engine's ranking algorithm works, and
-          never a guarantee for any individual page.</li>
-      </ul>
-    </section>
-
-    <section id="recommendations">
-      <h2>6. Ranked Recommendations</h2>
-      <p>
-        The validated Random Forest, retrained on the full dataset for deployment, scores every
-        eligible page and sorts it into one of four tiers:
-      </p>
-      <ul>
-        <li><span class="tier refresh">PRIORITIZE_REFRESH</span> — top 50 by decline-risk score, sized
-          to match a realistic weekly reviewer capacity.</li>
-        <li><span class="tier protect">PROTECT</span> — low decline risk and already strong
-          (top&#8209;10 average position) — worth watching, not touching.</li>
-        <li><span class="tier monitor">MONITOR</span> — moderate risk, no action this cycle.</li>
-        <li><span class="tier none">NO_ACTION_THIS_CYCLE</span> — everyone else.</li>
-      </ul>
-      <figure>
-        <img src="images/action_tier_distribution.png"
-          alt="Bar chart of action tier distribution across the scored content population">
-        <figcaption>Distribution of scored content across the four action tiers.</figcaption>
-      </figure>
-      <div class="callout">
-        <strong>Human review is required, not optional.</strong> Before acting on any pick, a
-        reviewer checks: (1) is a scheduled edit already in flight, (2) does the pick fall in the
-        low-volume label-construct caution zone, (3) does the content sit in a compliance-sensitive
-        category requiring domain sign-off, (4) is there external context (seasonality, a migration)
-        the model's March-only features can't see.
-      </div>
-      <div class="callout bad">
-        <strong>Never automated:</strong> publishing, editing, or depublishing any page from this
-        queue; public claims of a causal decline reason from the score alone; using
-        <code>decline_risk_score</code> to evaluate the person who wrote a page; skipping human review
-        for compliance-sensitive content regardless of rank.
-      </div>
-    </section>
-
-    <section id="reproducibility">
-      <h2>7. Reproducibility</h2>
-      <p>
-        Every notebook referenced in this paper is executed and committed in the public repository
-        below. Random seeds are fixed (<code>random_state=42</code>) throughout for reproducibility.
-      </p>
-      <ul>
-        <li><a href="https://github.com/ArjunHirani/flyrank-ml-internship">Full repository</a></li>
-        <li><a
-            href="https://github.com/ArjunHirani/flyrank-ml-internship/blob/main/work/notebooks/capstone.ipynb"><code>work/notebooks/capstone.ipynb</code></a>
-          — this paper's source analysis</li>
-        <li><a
-            href="https://github.com/ArjunHirani/flyrank-ml-internship/blob/main/work/notebooks/w03_data_contract.ipynb"><code>w03_data_contract.ipynb</code></a>
-          — data contract &amp; grain verification</li>
-        <li><a
-            href="https://github.com/ArjunHirani/flyrank-ml-internship/blob/main/work/notebooks/w04_baseline_score.ipynb"><code>w04_baseline_score.ipynb</code></a>
-          — baseline rule</li>
-        <li><a
-            href="https://github.com/ArjunHirani/flyrank-ml-internship/blob/main/work/notebooks/w05_model.ipynb"><code>w05_model.ipynb</code></a>
-          — model training &amp; comparison</li>
-        <li><a
-            href="https://github.com/ArjunHirani/flyrank-ml-internship/blob/main/work/notebooks/w06_validation_audit.ipynb"><code>w06_validation_audit.ipynb</code></a>
-          — validation &amp; leakage audit</li>
-        <li><a
-            href="https://github.com/ArjunHirani/flyrank-ml-internship/blob/main/work/notebooks/w07_action_playbook.ipynb"><code>w07_action_playbook.ipynb</code></a>
-          — action playbook</li>
-      </ul>
-    </section>
-
-    <footer>
-      <h2 style="border:none; margin-top:0;">Acknowledgments &amp; Data Credit</h2>
-      <p>
-        Built on the <strong>FlyRank ML Internship dataset</strong>. Data source and program:
-        <a href="https://flyrank.ai" target="_blank" rel="noopener">https://flyrank.ai</a>.
-      </p>
-      <p>&copy; 2026 Arjun Hirani. Public research page, no client-identifying data included.</p>
-    </footer>
-
+<section id="abstract">
+  <h2>Abstract</h2>
+  <div class="abstract">
+    <p>
+    This paper asks: given a content page's search performance in one 30-day window, can we
+    predict whether its clicks will decline in the following 30-day window — and can that
+    prediction beat a transparent, hand-written rule? Using FlyRank's pseudonymized search
+    warehouse (March&rarr;April 2026, 101,441 content-item observations across 44 clients), we
+    built a genuine past&rarr;future label, deliberately caught and fixed a label-leakage bug in
+    our own pipeline (a score inflated from an honest 0.68 ROC&#8209;AUC to a meaningless 1.00),
+    and validated a Random Forest against the hand-written baseline on an identical
+    client&#8209;grouped held&#8209;out test split. The Random Forest reached Precision@50 of
+    0.96 versus the baseline's 0.00 on this split — a real, leakage&#8209;audited result, not an
+    inflated one. The output is a reason&#8209;coded, human&#8209;reviewed action playbook, not
+    an automated system: decision&#8209;support for a content reviewer with limited weekly
+    capacity, never a causal or algorithm-level claim.
+    </p>
   </div>
-</body>
+</section>
 
+<section id="introduction">
+  <h2>1. Introduction — The Decision This Supports</h2>
+  <p>
+  A content reviewer at a typical FlyRank client has limited weekly capacity — realistically
+  20&ndash;50 pages, not the whole site. In the starter dataset alone, 16,262 of 30,000 pages were
+  already flagged as declining under a simple current-window label — at 50 pages a week, clearing
+  that backlog for just one snapshot would take roughly 325 weeks, or 6.3 years. Detection alone
+  is not the bottleneck; <em>prioritization</em> is.
+  </p>
+  <p>
+  This paper asks a harder, more useful question than "which pages are declining right now?" —
+  it asks "which pages will decline <em>next</em>, before that shows up in a standard report?"
+  That reframing from a same-window snapshot to a genuine past&rarr;future prediction is the
+  central methodological commitment of this work, and it shapes every design choice that follows.
+  </p>
+</section>
+
+<section id="data">
+  <h2>2. Data</h2>
+  <p>
+  <strong>Release:</strong> FlyRank's pseudonymized internship warehouse
+  (<code>fact_content_daily_performance</code>, ~79M rows total; <code>dim_content</code>),
+  hosted as Parquet on Hugging Face and queried in place with DuckDB.
+  </p>
+  <p>
+  <strong>Time windows:</strong> March 2026 as the feature/decision window, April 2026 as the
+  outcome/label window — a genuine past&rarr;future split. The sealed final month (June 2026,
+  the <code>_sample</code> table) was never used for label logic, per the dataset's own guidance.
+  </p>
+  <table>
+    <tr><th>Metric</th><th>Value</th></tr>
+    <tr><td>Rows in March 2026 (raw daily fact table)</td><td>9,841,378</td></tr>
+    <tr><td>Distinct clients (March)</td><td>55</td></tr>
+    <tr><td>Distinct content items (March)</td><td>331,437</td></tr>
+    <tr><td>GSC data availability (<code>IS TRUE</code>, not assumed)</td><td>36.7%</td></tr>
+    <tr><td>GA4 data availability (<code>IS TRUE</code>, not assumed)</td><td>4.2%</td></tr>
+    <tr><td>Final analysis population (active March pages + April outcome)</td><td>101,441 rows, 44 clients</td></tr>
+  </table>
+  <p><strong>Excluded, and why:</strong></p>
+  <ul>
+    <li><strong>GA4 engagement fields</strong> — excluded entirely. At only 4.2% row-level
+      availability in March, any engagement feature would be built on a small, non-representative
+      slice of clients, not the general population.</li>
+    <li><strong><code>fact_content_query_90d</code></strong> (query-level detail) — excluded for
+      this pass; its fixed 90-day window does not cleanly align with a monthly March/April split
+      without additional care to avoid a new window-overlap mistake.</li>
+    <li><strong>Individual AI-referral provider columns</strong> — too sparse at the single
+      content-item, single-month grain to be reliable features.</li>
+  </ul>
+</section>
+
+<section id="methodology">
+  <h2>3. Methodology</h2>
+  <h3>Label definition</h3>
+  <p>
+  <code>is_declining_april = 1 if clicks_april &lt; clicks_march else 0</code> — an
+  <strong>observed outcome</strong>, built entirely from April data. This deliberately avoids the
+  same-window proxy label trap identified early in this project (<code>trend_direction</code>,
+  itself derived from <code>trend_pct</code>, would teach a model to reproduce a rule rather than
+  learn the world).
+  </p>
+  <h3>Features (7, all knowable by end of March)</h3>
+  <p>
+  <code>impressions_march</code>, <code>clicks_march</code>, <code>avg_position_march</code>,
+  <code>active_days_march</code>, <code>content_age_days_march</code>, <code>ctr_march</code>,
+  and <code>ctr_gap</code> (actual CTR minus the position-tier's empirical expected CTR).
+  </p>
+  <h3>Baseline</h3>
+  <p>
+  A transparent hand-written rule: <code>score = 0.5&times;staleness_percentile +
+  0.5&times;CTR&#8209;deficit_percentile</code>. No fitted weights, one reason code, readable in
+  one sentence. This is the number every subsequent model must beat.
+  </p>
+  <h3>Validation design</h3>
+  <p>
+  <strong><code>GroupShuffleSplit</code> on <code>client_hash_id</code></strong>, 75/25. Every
+  content item from a given client is entirely in train or entirely in test, never both. This
+  replaces an earlier naive random row-level split, which risked letting a client's other content
+  items leak across train and test — the model could partially learn "this client's general
+  level" rather than genuine per-page signal.
+  </p>
+  <div class="callout bad">
+  <strong>Leakage check, performed deliberately:</strong> we added <code>clicks_april</code> — the
+  exact column the label is derived from — as a "feature," and watched ROC&#8209;AUC jump from an
+  honest <strong>0.682</strong> to a meaningless <strong>1.000</strong>. We then removed it and
+  kept the honest number. This confirms our evaluation harness actually detects leakage rather
+  than silently accepting it — a test we would want run against any claim before trusting it,
+  including claims in this paper.
+  </div>
+</section>
+
+<section id="results">
+  <h2>4. Results (vs Baseline)</h2>
+  <p>
+  All three methods evaluated on the identical held-out, client-grouped test split (11 clients,
+  never seen during training):
+  </p>
+  <table>
+    <tr><th>Method</th><th>Precision@20</th><th>Precision@50</th><th>ROC-AUC</th><th>Base rate</th></tr>
+    <tr><td>Baseline rule (hand-written)</td><td>0.00</td><td>0.00</td><td>0.285</td><td>0.376</td></tr>
+    <tr><td>Logistic Regression</td><td>0.60</td><td>0.66</td><td>0.715</td><td>0.376</td></tr>
+    <tr><td><strong>Random Forest</strong></td><td><strong>0.95</strong></td><td><strong>0.96</strong></td><td><strong>0.856</strong></td><td>0.376</td></tr>
+  </table>
+  <figure>
+    <img src="images/model_vs_baseline_precision.png" alt="Bar chart comparing Precision@20 and Precision@50 for the baseline rule, Logistic Regression, and Random Forest">
+    <figcaption>Precision@20 and Precision@50 for all three methods, same held-out client-grouped test split.</figcaption>
+  </figure>
+  <p>
+  A genuinely surprising result worth stating plainly rather than hiding: the hand-written
+  baseline scored <em>below random</em> on this particular 11-client test slice (ROC-AUC 0.285).
+  We treat this as a real finding about this specific split, not proof the underlying signals
+  (staleness, CTR-vs-position) are worthless — a claim that would need multiple splits to confirm
+  before it could be trusted.
+  </p>
+  <p>
+  Random Forest's top permutation-importance features were <code>ctr_march</code> (0.062) and
+  <code>clicks_march</code> (0.059) — both plausible and fully March-observed. Reviewing wrong
+  cases by hand: the model's most confident false negative was a page with 1,279 impressions, 31
+  clicks, and a strong position (3.8) that declined anyway — nothing in these 7 features warned
+  of it, pointing to real variance outside this feature set (seasonality, a competitor change)
+  that a March-only snapshot cannot see.
+  </p>
+</section>
+
+<section id="limitations">
+  <h2>5. Limitations &amp; Honest Framing</h2>
+  <ul>
+    <li><strong>Single month-pair.</strong> Validated on one past&rarr;future window
+      (March&rarr;April 2026). Other-month or seasonal generalization is untested.</li>
+    <li><strong>Small test-client count.</strong> 11 held-out clients is enough to catch gross
+      overfitting, not enough for confident broad cross-client generalization claims.</li>
+    <li><strong>GA4 excluded.</strong> Results reflect GSC-observable behavior only.</li>
+    <li><strong>Label-construct sensitivity.</strong> A strict "&lt;" threshold on raw click
+      counts can flip the label on a single extra April click for very low-volume March pages —
+      some precision may reflect this rather than pure decline signal.</li>
+    <li><strong>No causal claims.</strong> Every result here is observed, directional, and
+      decision-support — never a claim about how any search engine's ranking algorithm works, and
+      never a guarantee for any individual page.</li>
+  </ul>
+</section>
+
+<section id="recommendations">
+  <h2>6. Ranked Recommendations</h2>
+  <p>
+  The validated Random Forest, retrained on the full dataset for deployment, scores every
+  eligible page and sorts it into one of four tiers:
+  </p>
+  <ul>
+    <li><span class="tier refresh">PRIORITIZE_REFRESH</span> — top 50 by decline-risk score, sized
+      to match a realistic weekly reviewer capacity.</li>
+    <li><span class="tier protect">PROTECT</span> — low decline risk and already strong
+      (top&#8209;10 average position) — worth watching, not touching.</li>
+    <li><span class="tier monitor">MONITOR</span> — moderate risk, no action this cycle.</li>
+    <li><span class="tier none">NO_ACTION_THIS_CYCLE</span> — everyone else.</li>
+  </ul>
+  <figure>
+    <img src="images/action_tier_distribution.png" alt="Bar chart of action tier distribution across the scored content population">
+    <figcaption>Distribution of scored content across the four action tiers.</figcaption>
+  </figure>
+  <div class="callout">
+    <strong>Human review is required, not optional.</strong> Before acting on any pick, a
+    reviewer checks: (1) is a scheduled edit already in flight, (2) does the pick fall in the
+    low-volume label-construct caution zone, (3) does the content sit in a compliance-sensitive
+    category requiring domain sign-off, (4) is there external context (seasonality, a migration)
+    the model's March-only features can't see.
+  </div>
+  <div class="callout bad">
+    <strong>Never automated:</strong> publishing, editing, or depublishing any page from this
+    queue; public claims of a causal decline reason from the score alone; using
+    <code>decline_risk_score</code> to evaluate the person who wrote a page; skipping human review
+    for compliance-sensitive content regardless of rank.
+  </div>
+</section>
+
+<section id="reproducibility">
+  <h2>7. Reproducibility</h2>
+  <p>
+  Every notebook referenced in this paper is executed and committed in the public repository
+  below. Random seeds are fixed (<code>random_state=42</code>) throughout for reproducibility.
+  </p>
+  <ul>
+    <li><a href="https://github.com/ArjunHirani/flyrank-ml-internship">Full repository</a></li>
+    <li><a href="https://github.com/ArjunHirani/flyrank-ml-internship/blob/main/work/notebooks/capstone.ipynb"><code>work/notebooks/capstone.ipynb</code></a> — this paper's source analysis</li>
+    <li><a href="https://github.com/ArjunHirani/flyrank-ml-internship/blob/main/work/notebooks/w03_data_contract.ipynb"><code>w03_data_contract.ipynb</code></a> — data contract &amp; grain verification</li>
+    <li><a href="https://github.com/ArjunHirani/flyrank-ml-internship/blob/main/work/notebooks/w04_baseline_score.ipynb"><code>w04_baseline_score.ipynb</code></a> — baseline rule</li>
+    <li><a href="https://github.com/ArjunHirani/flyrank-ml-internship/blob/main/work/notebooks/w05_model.ipynb"><code>w05_model.ipynb</code></a> — model training &amp; comparison</li>
+    <li><a href="https://github.com/ArjunHirani/flyrank-ml-internship/blob/main/work/notebooks/w06_validation_audit.ipynb"><code>w06_validation_audit.ipynb</code></a> — validation &amp; leakage audit</li>
+    <li><a href="https://github.com/ArjunHirani/flyrank-ml-internship/blob/main/work/notebooks/w07_action_playbook.ipynb"><code>w07_action_playbook.ipynb</code></a> — action playbook</li>
+  </ul>
+</section>
+
+<footer>
+  <h2 style="border:none; margin-top:0;">Acknowledgments &amp; Data Credit</h2>
+  <p>
+  Built on the <strong>FlyRank ML Internship dataset</strong>. Data source and program:
+  <a href="https://flyrank.ai" target="_blank" rel="noopener">https://flyrank.ai</a>.
+  </p>
+  <p>&copy; 2026 Arjun Hirani. Public research page, no client-identifying data included.</p>
+</footer>
+
+</div>
+</body>
 </html>
