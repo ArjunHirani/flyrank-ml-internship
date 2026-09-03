@@ -90,12 +90,19 @@
 <section id="introduction">
   <h2>1. Introduction — The Decision This Supports</h2>
   <p>
-  A content reviewer at a typical FlyRank client has limited weekly capacity — realistically
-  20&ndash;50 pages, not the whole site. In the starter dataset alone, 16,262 of 30,000 pages were
-  already flagged as declining under a simple current-window label — at 50 pages a week, clearing
-  that backlog for just one snapshot would take roughly 325 weeks, or 6.3 years. Detection alone
-  is not the bottleneck; <em>prioritization</em> is.
-  </p>
+<strong>This is the FlyRank content problem this paper works from.</strong> A content reviewer
+at a typical FlyRank client has limited weekly capacity — realistically 20&ndash;50 pages, not
+the whole site. In the starter dataset alone, 16,262 of 30,000 pages were already flagged as
+declining under a simple current-window label — at 50 pages a week, clearing that backlog for
+just one snapshot would take roughly 325 weeks, or 6.3 years. Detection alone is not the
+bottleneck; <em>prioritization</em> is: which of thousands of declining pages does a real
+reviewer, with a real Monday-morning queue, look at first?
+</p>
+<p>
+This case study answers that question with data rather than assumption: does a validated model
+actually beat a hand-written prioritization rule on this exact problem, on real held-out clients
+— and if so, by how much, and where does it still get it wrong?
+</p>
   <p>
   This paper asks a harder, more useful question than "which pages are declining right now?" —
   it asks "which pages will decline <em>next</em>, before that shows up in a standard report?"
